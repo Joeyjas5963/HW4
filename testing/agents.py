@@ -3,19 +3,27 @@ import numpy as np
 
 
 def allocator(picks):
+    """Agent that fixes overallocation of TAs (TAs allocated to more sections than desired).
+    Essentially, replaces TA row with fixed schedule matching TAs max_assignment
+    """
 
     # grabs first solution
     sol = picks[0]
-
+    
+    # Find currently assigned section total for each TA
     s = sol.sch_sol.sum(axis=1)
     mask = s > sol.tas_max
-
+    
+    # Function that returns an array of 1s & 0s
+    # of randomly allocated section based on TA's max_assignment
     def r_array(m_as, len):
         pr = m_as / len
         return np.random.choice([0, 1], len, p=[1 - pr, pr])
-
+    
+    # Copy of current schedule
     n_sol = copy(sol)
-
+    
+    # Replacing each row that needs fixing with correct TA assignment
     for i, b in enumerate(mask):
         if b:
             n_arr = r_array(n_sol.tas_max[i], n_sol.sec_len)
@@ -59,18 +67,26 @@ def time_fix(picks):
 
 
 def support(picks):
-
+    """Agent that fixes undersupported sections (num TAs < min TAs per section)
+    Essentially, replaces section column with fixed schedule matching section min_tas
+    """
+    # grabs first solution
     sol = picks[0]
-
+    
+    # Find currently assigned TA total for each section
     sec_tas = sol.sch_sol.sum(axis=0)
     mask = sec_tas < sol.min_tas
-
+    
+    # Function that returns an array of 1s & 0s
+    # of randomly allocated TAs based on sections's min_TA req
     def r_array(m_as, len):
         pr = m_as / len
         return np.random.choice([0, 1], len, p=[1 - pr, pr])
-
+    
+    # Copy of current schedule
     n_sol = copy(sol)
-
+    
+    # Replacing each column that needs fixing with correct section assignment
     for i, b in enumerate(mask):
         if b:
             n_arr = r_array(n_sol.min_tas[i] + 2, n_sol.num_tas)
