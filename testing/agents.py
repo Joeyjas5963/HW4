@@ -2,7 +2,10 @@ from copy import copy
 import numpy as np
 
 
-def allocator(sol):
+def allocator(picks):
+
+    # grabs first solution
+    sol = picks[0]
 
     s = sol.sch_sol.sum(axis=1)
     mask = s > sol.tas_max
@@ -18,11 +21,13 @@ def allocator(sol):
             n_arr = r_array(n_sol.tas_max[i], n_sol.sec_len)
             n_sol.sch_sol[i] = n_arr
 
-    return n_sol
+    return n_sol.sch_sol
 
 
+def time_fix(picks):
 
-def time_fix(sol):
+    sol = picks[0]
+
     n_sol = copy(sol)
 
     for i, row, in enumerate(n_sol.sch_sol):
@@ -50,10 +55,13 @@ def time_fix(sol):
 
         n_sol.sch_sol[i] = np.where(new_arr != 0, 1, 0)
 
-    return n_sol
+    return n_sol.sch_sol
 
 
-def support(sol):
+def support(picks):
+
+    sol = picks[0]
+
     sec_tas = sol.sch_sol.sum(axis=0)
     mask = sec_tas < sol.min_tas
 
@@ -68,4 +76,4 @@ def support(sol):
             n_arr = r_array(n_sol.min_tas[i] + 2, n_sol.num_tas)
             n_sol.sch_sol[:, i] = n_arr
 
-    return n_sol
+    return n_sol.sch_sol

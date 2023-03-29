@@ -2,10 +2,12 @@ import numpy as np
 from schedule import Schedule
 import random
 
-def max_pref(sol):
+def max_pref(picks):
+
+    sol = picks[0]
 
     # sum each TAs preference values
-    pref_vec = np.sum(sol.pref_matx, axis=1)
+    pref_vec = np.sum(sol.w_sol, axis=1)
 
     # find TAs with lowest preference values
     ta_idx_0, ta_idx_1 = np.argsort(pref_vec)[:2]
@@ -23,8 +25,4 @@ def max_pref(sol):
     sol.sch_sol[ta_idx_1, sect_0] = 1
     sol.sch_sol[ta_idx_1, sect_1] = 0
 
-    return sol
-
-Schedule.load_tas('tas.csv')
-Schedule.load_sections('sections.csv')
-sol = Schedule('test1.csv')
+    return sol.sch_sol

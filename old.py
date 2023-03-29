@@ -1,5 +1,7 @@
+import numpy as np
 import pandas as pd
 import random as rnd
+from copy import copy
 from evo import Evo
 
 
@@ -32,6 +34,16 @@ def assign(section, ta):
     section.tas.append(ta)
     ta.sections.append(section)
 
+
+def get_array(sections, tas):
+
+    array = np.loadtxt('test_cases/test1.csv', delimiter=',', dtype=int) * 0
+
+    for ta in tas:
+        for section in ta.sections:
+            array[ta.id, section.id] = 1
+
+    print(array)
 
 def setup():
 
@@ -137,14 +149,21 @@ def unprefered(tas):
 
 def main():
 
+
     sections, tas = setup()
+
+
     random_start(sections, tas)
+
+    get_array(sections, tas)
+
+    """
     overallocation(tas)
     conflicts(tas)
     undersupport(sections)
     unwilling(tas)
     unprefered(tas)
-
+    """
 
 main()
 

@@ -22,12 +22,16 @@ class Schedule:
     num_tas = None
     times = None
 
-    def __init__(self, sol_csv=None):
+    def __init__(self, sol_csv=None, sol_array=None):
         # Loading solution
+
+        self.sch_sol = sol_array
+
         if sol_csv:
             # Loading if given csv
             self.sch_sol = np.loadtxt(sol_csv, delimiter=",", dtype=int)
             self.w_sol = np.multiply(self.sch_sol, Schedule.tas_pref)
+
         else:
             # Randomly generating solution based on schedule requirements
             n_tas = Schedule.num_tas
@@ -38,6 +42,10 @@ class Schedule:
             self.sch_sol = np.random.choice([0, 1], size=(n_tas, n_sec),
                                             p=[1-pr, pr])
             self.w_sol = np.multiply(self.sch_sol, Schedule.tas_pref)
+
+    def __str__(self):
+
+        return 'I AM A SOLUTION'
 
     @staticmethod
     def load_sections(csv):
